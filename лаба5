@@ -1,0 +1,191 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+// Базовий клас Publication
+class Publication {
+protected:
+    string title;
+    float price;
+
+public:
+    virtual void getData() {
+        cout << "Введіть назву публікації: ";
+        getline(cin, title);
+        cout << "Введіть ціну: ";
+        cin >> price;
+        cin.ignore(); // Очищення буфера
+    }
+
+    virtual void printData() const {
+        cout << "Назва: " << title << "\n";
+        cout << "Ціна: " << price << " грн\n";
+    }
+
+    virtual bool isOversized() const {
+        return false; // Базовий клас не перевіряє розмір
+    }
+
+    // Метод для отримання назви публікації
+    string getTitle() const {
+        return title;
+    }
+
+    virtual ~Publication() {}
+};
+
+// Клас Book, який успадковується від Publication
+class Book : public Publication {
+private:
+    int pages;
+
+public:
+    void getData() override {
+        Publication::getData(); // Виклик методу з базового класу
+        cout << "Введіть кількість сторінок: ";
+        cin >> pages;
+        cin.ignore(); // Очищення буфера
+    }
+
+    void printData() const override {
+        Publication::printData(); // Виклик методу з базового класу
+        cout << "Кількість сторінок: " << pages << "\n";
+    }
+
+    bool isOversized() const override {
+        return pages > 800; // Перевірка на перевищення розміру
+    }
+};
+
+// Клас AudioBook, який успадковується від Publication
+class AudioBook : public Publication {
+private:
+    float duration; // Тривалість у хвилинах
+
+public:
+    void getData() override {
+        Publication::getData(); // Виклик методу з базового класу
+        cout << "Введіть тривалість аудіокниги (в хвилинах): ";
+        cin >> duration;
+        cin.ignore(); // Очищення буфера
+    }
+
+    void printData() const override {
+        Publication::printData(); // Виклик методу з базового класу
+        cout << "Тривалість аудіокниги: " << duration << " хв\n";
+    }
+
+    bool isOversized() const override {
+        return duration > 90; // Перевірка на перевищення розміру
+    }
+};
+
+// Базовий клас Car
+class Car {
+protected:
+    string model;
+    float price;
+
+public:
+    virtual void input() {
+        cout << "Введіть модель автомобіля: ";
+        getline(cin, model);
+        cout << "Введіть ціну автомобіля: ";
+        cin >> price;
+        cin.ignore(); // Очищення буфера
+    }
+
+    virtual void print() const {
+        cout << "Модель: " << model << "\n";
+        cout << "Ціна: " << price << " грн\n";
+    }
+
+    virtual ~Car() {}
+};
+
+// Клас SportsCar, який успадковується від Car
+class SportsCar : public Car {
+private:
+    int maxSpeed; // Максимальна швидкість
+    string engineType; // Тип двигуна
+
+public:
+    void input() override {
+        Car::input(); // Виклик методу з базового класу
+        cout << "Введіть максимальну швидкість: ";
+        cin >> maxSpeed;
+        cin.ignore(); // Очищення буфера
+        cout << "Введіть тип двигуна: ";
+        getline(cin, engineType);
+    }
+
+    void print() const override {
+        Car::print(); // Виклик методу з базового класу
+        cout << "Максимальна швидкість: " << maxSpeed << " км/год\n";
+        cout << "Тип двигуна: " << engineType << "\n";
+    }
+};
+
+// Клас ElectricCar, який успадковується від Car
+class ElectricCar : public Car {
+private:
+    double range; // Діапазон їзди
+    string batteryType; // Тип батареї
+
+public:
+    void input() override {
+        Car::input(); // Виклик методу з базового класу
+        cout << "Введіть діапазон їзди: ";
+        cin >> range;
+        cin.ignore(); // Очищення буфера
+        cout << "Введіть тип батареї: ";
+        getline(cin, batteryType);
+    }
+
+    void print() const override {
+        Car::print(); // Виклик методу з базового класу
+        cout << "Діапазон їзди: " << range << " км\n";
+        cout << "Тип батареї: " << batteryType << "\n";
+    }
+};
+
+// Головна функція
+int main() {
+    const int SIZE = 5; // Розмір масиву
+    Publication* publications[SIZE]; // Масив вказівників на Publication
+
+    // Заповнення масиву
+    for (int i = 0; i < SIZE; ++i) {
+        cout << "Введіть тип публікації (1 - книга, 2 - аудіокнига): ";
+        int type;
+        cin >> type;
+        cin.ignore(); // Очищення буфера
+
+        if (type == 1) {
+            publications[i] = new Book();
+        } else {
+            publications[i] = new AudioBook();
+        }
+
+        publications[i]->getData(); // Отримання даних
+    }
+
+    // Виведення даних
+    cout << "\nДані про публікації:\n";
+    for (int i = 0; i < SIZE; ++i) {
+        publications[i]->printData(); // Виведення даних
+        if (publications[i]->isOversized()) { // Перевірка на перевищення розміру
+            cout << "Перевищення розміру! Назва: " << publications[i]->getTitle() << "\n"; // Використання методу getTitle()
+        }
+        cout << endl;
+    }
+
+    // Вивільнення пам'яті
+    for (int i = 0; i < SIZE; ++i) {
+        delete publications[i];
+    }
+
+    return 0;
+}
