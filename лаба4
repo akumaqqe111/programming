@@ -1,0 +1,196 @@
+#include <iostream>
+#include <string>
+
+// Базовий клас Publication
+class Publication {
+protected:
+    std::string title;
+    float price;
+
+public:
+    void inputData() {
+        std::cout << "Введіть назву: ";
+        std::getline(std::cin, title);
+        std::cout << "Введіть ціну: ";
+        std::cin >> price;
+        std::cin.ignore(); // Очищення буфера
+    }
+
+    void outputData() const {
+        std::cout << "Назва: " << title << "\n";
+        std::cout << "Ціна: " << price << " грн\n";
+    }
+};
+
+// Клас Sales для зберігання даних про продажі
+class Sales {
+protected:
+    float sales[3]; // Вартість проданих книг за 3 місяці
+
+public:
+    void inputData() {
+        std::cout << "Введіть вартість проданих книг за останні 3 місяці:\n";
+        for (int i = 0; i < 3; ++i) {
+            std::cout << "Місяць " << (i + 1) << ": ";
+            std::cin >> sales[i];
+        }
+        std::cin.ignore(); // Очищення буфера
+    }
+
+    void outputData() const {
+        std::cout << "Вартість проданих книг за останні 3 місяці:\n";
+        for (int i = 0; i < 3; ++i) {
+            std::cout << "Місяць " << (i + 1) << ": " << sales[i] << " грн\n";
+        }
+    }
+};
+
+// Клас Book, який успадковується від Publication і Sales
+class Book : public Publication, public Sales {
+private:
+    int pages;
+
+public:
+    void inputData() {
+        Publication::inputData(); // Введення даних з батьківського класу
+        Sales::inputData(); // Введення даних про продажі
+        std::cout << "Введіть кількість сторінок: ";
+        std::cin >> pages;
+        std::cin.ignore(); // Очищення буфера
+    }
+
+    void outputData() const {
+        Publication::outputData(); // Виведення даних з батьківського класу
+        Sales::outputData(); // Виведення даних про продажі
+        std::cout << "Кількість сторінок: " << pages << "\n";
+    }
+};
+
+// Клас Type, який також успадковується від Publication і Sales
+class Type : public Publication, public Sales {
+private:
+    float duration; // Тривалість у хвилинах
+
+public:
+    void inputData() {
+        Publication::inputData(); // Введення даних з батьківського класу
+        Sales::inputData(); // Введення даних про продажі
+        std::cout << "Введіть тривалість (хв): ";
+        std::cin >> duration;
+        std::cin.ignore(); // Очищення буфера
+    }
+
+    void outputData() const {
+        Publication::outputData(); // Виведення даних з батьківського класу
+        Sales::outputData(); // Виведення даних про продажі
+        std::cout << "Тривалість: " << duration << " хв\n";
+    }
+};
+
+// Базовий клас Car
+class Car {
+protected:
+    std::string model;
+    float price;
+
+public:
+    Car() : model("Unknown"), price(0.0f) {}
+
+    Car(const std::string& model, float price) : model(model), price(price) {}
+
+    // Метод для введення даних
+    virtual void inputData() {
+        std::cout << "Введіть модель автомобіля: ";
+        std::getline(std::cin, model);
+        std::cout << "Введіть ціну автомобіля: ";
+        std::cin >> price;
+        std::cin.ignore(); // Очищення буфера
+    }
+
+    // Метод для виведення даних
+    virtual void outputData() const {
+        std::cout << "Модель: " << model << "\n";
+        std::cout << "Ціна: " << price << " грн\n";
+    }
+};
+
+// Клас SportsCar, який успадковується від Car
+class SportsCar : public Car {
+private:
+    int maxSpeed; // Максимальна швидкість
+    std::string engineType; // Тип двигуна
+
+public:
+    SportsCar() : Car(), maxSpeed(0), engineType("Unknown") {}
+
+    void inputData() {
+        Car::inputData(); // Введення даних з батьківського класу
+        std::cout << "Введіть максимальну швидкість: ";
+        std::cin >> maxSpeed;
+        std::cin.ignore(); // Очищення буфера
+        std::cout << "Введіть тип двигуна: ";
+        std::getline(std::cin, engineType);
+    }
+
+    void outputData() const {
+        Car::outputData(); // Виведення даних з батьківського класу
+        std::cout << "Максимальна швидкість: " << maxSpeed << " км/год\n";
+        std::cout << "Тип двигуна: " << engineType << "\n";
+    }
+};
+
+// Клас ElectricCar, який успадковується від Car
+class ElectricCar : public Car {
+private:
+    double range; // Діапазон їзди
+    std::string batteryType; // Тип батареї
+
+public:
+    ElectricCar() : Car(), range(0.0), batteryType("Unknown") {}
+
+    void inputData() {
+        Car::inputData(); // Введення даних з батьківського класу
+        std::cout << "Введіть діапазон їзди: ";
+        std::cin >> range;
+        std::cin.ignore(); // Очищення буфера
+        std::cout << "Введіть тип батареї: ";
+        std::getline(std::cin, batteryType);
+    }
+
+    void outputData() const {
+        Car::outputData(); // Виведення даних з батьківського класу
+        std::cout << "Діапазон їзди: " << range << " км\n";
+        std::cout << "Тип батареї: " << batteryType << "\n";
+    }
+};
+
+// Головна функція
+int main() {
+    // Тестування класів Book і Type
+    std::cout << "Введіть дані про книгу:\n";
+    Book myBook;
+    myBook.inputData();
+    std::cout << "\nДані про книгу:\n";
+    myBook.outputData();
+
+    std::cout << "\nВведіть дані про аудіо-запис:\n";
+    Type myType;
+    myType.inputData();
+    std::cout << "\nДані про аудіо-запис:\n";
+    myType.outputData();
+
+    // Тестування класів SportsCar і ElectricCar
+    std::cout << "\nВведіть дані про спортивний автомобіль:\n";
+    SportsCar mySportsCar;
+    mySportsCar.inputData();
+    std::cout << "\nДані про спортивний автомобіль:\n";
+    mySportsCar.outputData();
+
+    std::cout << "\nВведіть дані про електричний автомобіль:\n";
+    ElectricCar myElectricCar;
+    myElectricCar.inputData();
+    std::cout << "\nДані про електричний автомобіль:\n";
+    myElectricCar.outputData();
+
+    return 0;
+}
