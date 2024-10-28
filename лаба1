@@ -1,0 +1,67 @@
+#include <iostream>
+
+class Time {
+private:
+    int hours;   // Години
+    int minutes; // Хвилини
+    int seconds; // Секунди
+
+public:
+    // Конструктор за замовчуванням (ініціалізація нульовими значеннями)
+    Time() : hours(0), minutes(0), seconds(0) {}
+
+    // Конструктор з параметрами
+    Time(int h, int m, int s) : hours(h), minutes(m), seconds(s) {
+        // Нормалізуємо значення
+        normalize();
+    }
+
+    // Метод для виводу часу в форматі 11:59:59
+    void display() const {
+        std::cout << (hours < 10 ? "0" : "") << hours << ":"
+                  << (minutes < 10 ? "0" : "") << minutes << ":"
+                  << (seconds < 10 ? "0" : "") << seconds << std::endl;
+    }
+
+    // Метод для сумування часу
+    Time sum(const Time& other) const {
+        Time result;
+        result.hours = hours + other.hours;
+        result.minutes = minutes + other.minutes;
+        result.seconds = seconds + other.seconds;
+        result.normalize(); // Нормалізуємо результат
+        return result;
+    }
+
+private:
+    // Метод для нормалізації значень (перетворюємо на стандартний формат)
+    void normalize() {
+        if (seconds >= 60) {
+            minutes += seconds / 60;
+            seconds %= 60;
+        }
+        if (minutes >= 60) {
+            hours += minutes / 60;
+            minutes %= 60;
+        }
+        // Для простоти не будемо обробляти більше 24 годин
+    }
+};
+
+int main() {
+    // Створюємо два ініціалізованих об'єкта
+    const Time time1(11, 59, 59);
+    const Time time2(1, 1, 1);
+
+    // Створюємо неініціалізований об'єкт
+    Time time3;
+
+    // Сумуємо два ініціалізованих об'єкти та присвоюємо результат неініціалізованому об'єкту
+    time3 = time1.sum(time2);
+
+    // Виводимо значення результату
+    std::cout << "Сумарний час: ";
+    time3.display();
+
+    return 0;
+}
