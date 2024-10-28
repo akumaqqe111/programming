@@ -1,0 +1,119 @@
+#include <iostream>
+#include <cstring>
+#include <cassert>
+#include <climits> // Для INT_MAX, INT_MIN
+
+class Integer {
+private:
+    int value;
+
+public:
+    // Конструктор
+    Integer(int v = 0) : value(v) {}
+
+    // Операція '+'
+    Integer operator+(const Integer& other) {
+        long result = static_cast<long>(value) + other.value;
+        if (result > INT_MAX || result < INT_MIN) {
+            std::cerr << "Error: Overflow in addition!" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        return Integer(static_cast<int>(result));
+    }
+
+    // Операція '-'
+    Integer operator-(const Integer& other) {
+        long result = static_cast<long>(value) - other.value;
+        if (result > INT_MAX || result < INT_MIN) {
+            std::cerr << "Error: Overflow in subtraction!" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        return Integer(static_cast<int>(result));
+    }
+
+    // Операція '*'
+    Integer operator*(const Integer& other) {
+        long result = static_cast<long>(value) * other.value;
+        if (result > INT_MAX || result < INT_MIN) {
+            std::cerr << "Error: Overflow in multiplication!" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        return Integer(static_cast<int>(result));
+    }
+
+    // Операція '/'
+    Integer operator/(const Integer& other) {
+        if (other.value == 0) {
+            std::cerr << "Error: Division by zero!" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        return Integer(value / other.value);
+    }
+
+    // Метод для виводу значення
+    void print() const {
+        std::cout << "Value: " << value << std::endl;
+    }
+};
+
+class Car {
+private:
+    char model[50]; // Модель автомобіля
+    int cost;       // Вартість
+
+public:
+    // Конструктор за замовчуванням
+    Car() {
+        strcpy(model, "Unknown");
+        cost = 0;
+    }
+
+    // Параметризований конструктор
+    Car(const char* model, int cost) {
+        strncpy(this->model, model, sizeof(this->model) - 1);
+        this->model[sizeof(this->model) - 1] = '\0'; // Захист від переповнення
+        this->cost = cost;
+    }
+
+    // Перевантаження оператора вводу
+    friend std::istream& operator>>(std::istream& is, Car& car) {
+        std::cout << "Введіть модель автомобіля: ";
+        is >> car.model;
+        std::cout << "Введіть вартість автомобіля: ";
+        is >> car.cost;
+        return is;
+    }
+
+    // Перевантаження оператора виводу
+    friend std::ostream& operator<<(std::ostream& os, const Car& car) {
+        os << "Модель: " << car.model << ", Вартість: " << car.cost << " грн";
+        return os;
+    }
+};
+
+int main() {
+    // Завдання 1: Операції з класом Integer
+    Integer objA(10);
+    int x = 5; // Встановлюємо значення x
+    Integer objB(x); // Створюємо об'єкт objB
+    Integer objC;
+
+    objC = objA + objB;
+    objC.print();
+
+    objC = objA - objB;
+    objC.print();
+
+    objC = objA * objB;
+    objC.print();
+
+    objC = objA / objB;
+    objC.print();
+
+    // Завдання 2: Операції з класом Car
+    Car myCar;
+    std::cin >> myCar;
+    std::cout << myCar << std::endl;
+
+    return 0;
+}
