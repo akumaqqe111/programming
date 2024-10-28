@@ -1,0 +1,125 @@
+#include <iostream>
+#include <string>
+
+class Car {
+private:
+    std::string model; // Модель машини
+    int cost;          // Вартість
+
+public:
+    // Конструктор за замовчуванням
+    Car() : model(""), cost(0) {}
+
+    // Параметризований конструктор
+    Car(const std::string& model, int cost) : model(model), cost(cost) {}
+
+    // Конструктор копіювання
+    Car(const Car& other) : model(other.model), cost(other.cost) {}
+
+    // Метод для встановлення моделі
+    void setModel(const std::string& model) {
+        this->model = model;
+    }
+
+    // Метод для отримання моделі
+    std::string getModel() const {
+        return model;
+    }
+
+    // Метод для встановлення вартості
+    void setCost(int cost) {
+        this->cost = cost;
+    }
+
+    // Метод для отримання вартості
+    int getCost() const {
+        return cost;
+    }
+
+    // Метод для виводу даних
+    void print() const {
+        std::cout << "Модель: " << model << ", Вартість: " << cost << " грн." << std::endl;
+    }
+
+    // Метод для зчитування даних
+    void input() {
+        std::cout << "Введіть модель автомобіля: ";
+        std::getline(std::cin, model);
+        std::cout << "Введіть вартість автомобіля: ";
+        std::cin >> cost;
+        std::cin.ignore(); // очищення буфера вводу
+    }
+
+    // Деструктор
+    ~Car() {}
+};
+
+class List {
+private:
+    Car car;        // Елемент списку
+    List* next;    // Покажчик на наступний елемент списку
+
+public:
+    // Конструктор
+    List(const Car& car, List* next = nullptr) : car(car), next(next) {}
+
+    // Деструктор
+    ~List() {
+        delete next; // Рекурсивно звільняємо пам'ять
+    }
+
+    // Метод для виводу даних списку
+    void printList() const {
+        car.print(); // Виводимо дані поточного елемента
+        if (next) {
+            next->printList(); // Рекурсивно викликаємо printList для наступного елемента
+        }
+    }
+
+    // Метод для додавання нового елемента в список
+    void add(const Car& newCar) {
+        if (!next) {
+            next = new List(newCar); // Додаємо новий елемент
+        } else {
+            next->add(newCar); // Рекурсивно викликаємо для наступного елемента
+        }
+    }
+};
+
+int main() {
+    // Статичні об'єкти
+    Car car1("Toyota", 25000);
+    Car car2("Honda", 23000);
+    
+    std::cout << "Статичні автомобілі:" << std::endl;
+    car1.print();
+    car2.print();
+
+    // Динамічні об'єкти
+    List* myList = nullptr; // Початковий пустий список
+
+    // Створюємо об'єкти динамічно
+    int n;
+    std::cout << "Скільки автомобілів ви хочете додати в список? ";
+    std::cin >> n;
+    std::cin.ignore(); // Очищуємо буфер вводу
+
+    for (int i = 0; i < n; ++i) {
+        Car newCar;
+        newCar.input(); // Зчитуємо дані про автомобіль
+        if (!myList) {
+            myList = new List(newCar); // Створюємо перший елемент списку
+        } else {
+            myList->add(newCar); // Додаємо новий автомобіль до списку
+        }
+    }
+
+    std::cout << "\nАвтомобілі у списку:" << std::endl;
+    if (myList) {
+        myList->printList(); // Виводимо список автомобілів
+    }
+
+    delete myList; // Знищуємо список
+
+    return 0;
+}
