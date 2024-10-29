@@ -27,6 +27,11 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+
+
+
+
+
 #ifndef MAINWINDOW_H
 C
 
@@ -90,6 +95,10 @@ C
 
 #endif // MAINWINDOW_H
 
+
+
+
+
 C++
 
 #include "mainwindow.h"
@@ -109,6 +118,10 @@ lua
 
     return a.exec();
 }
+
+
+
+
 
 C++
 
