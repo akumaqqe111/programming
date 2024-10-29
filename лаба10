@@ -1,0 +1,194 @@
+QT       += core gui
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+Python
+
+CONFIG += c++11
+
+# You can make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+SOURCES += \
+    main.cpp \
+    mainwindow.cpp
+
+Python
+
+HEADERS += \
+    mainwindow.h
+
+FORMS += \
+    mainwindow.ui
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
+
+#ifndef MAINWINDOW_H
+C
+
+#define MAINWINDOW_H
+
+C++
+
+#include <QMainWindow>
+C++
+
+#include <QMessageBox>
+C++
+
+#include <QFileDialog>
+
+QT_BEGIN_NAMESPACE
+C
+
+namespace Ui { class MainWindow; }
+C++
+
+QT_END_NAMESPACE
+
+C
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+C
+
+public:
+C++
+
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+C
+
+private slots:
+C++
+
+    void OpenModalDialog();
+C
+
+    void OpenNotModalDialog();
+C
+
+    void toggleConnection();
+
+C
+
+private:
+    Ui::MainWindow *ui;
+C++
+
+    bool signalsConnected = true;
+};
+
+C
+
+#endif // MAINWINDOW_H
+
+C++
+
+#include "mainwindow.h"
+
+C++
+
+#include <QApplication>
+
+C
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+lua
+
+    return a.exec();
+}
+
+C++
+
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+C++
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+C++
+
+    ui->setupUi(this);
+
+
+C++
+
+    connect(ui->pbOpenModalDialog, &QPushButton::clicked, this, &MainWindow::OpenModalDialog);
+C++
+
+    connect(ui->pbOpenNotModalDialog, &QPushButton::clicked, this, &MainWindow::OpenNotModalDialog);
+C++
+
+    connect(ui->pbToggleConnection, &QPushButton::clicked, this, &MainWindow::toggleConnection);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+C++
+
+void MainWindow::OpenModalDialog()
+{
+C++
+
+    QMessageBox::critical(this, "Критична помилка", "Виникла критична помилка!");
+}
+
+C++
+
+void MainWindow::OpenNotModalDialog()
+{
+C++
+
+    QString fileName = QFileDialog::getOpenFileName(this, "Відкрити файл", "", "Файли (*.*)");
+Java
+
+    if (!fileName.isEmpty()) {
+
+    }
+}
+
+C++
+
+void MainWindow::toggleConnection()
+{
+    if (signalsConnected) {
+C++
+
+        disconnect(ui->pbOpenModalDialog, &QPushButton::clicked, this, &MainWindow::OpenModalDialog);
+C++
+
+        disconnect(ui->pbOpenNotModalDialog, &QPushButton::clicked, this, &MainWindow::OpenNotModalDialog);
+C++
+
+        ui->pbToggleConnection->setText("Підключити");
+    } else {
+C++
+
+        connect(ui->pbOpenModalDialog, &QPushButton::clicked, this, &MainWindow::OpenModalDialog);
+C++
+
+        connect(ui->pbOpenNotModalDialog, &QPushButton::clicked, this, &MainWindow::OpenNotModalDialog);
+C++
+
+        ui->pbToggleConnection->setText("Відключити");
+    }
+    signalsConnected = !signalsConnected;
+}
